@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+
+<html lang="en" ng-app="gemStore">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>My AngularJS App</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!--<link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/normalize.css">
+  <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/main.css">-->
+  <link rel="stylesheet" href="app.css">
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
+  <script src="https://code.angularjs.org/1.5.5/angular.min.js"></script>
+  <script src="/product-description.html"></script>
+  <script src="/product-specs.html"></script>
+
+  <!--<script src="/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" src="/css/bootstrap.min.css"></link>-->
+</head>
+
+<body class="container" ng-controller="StoreController as store">
+
+  <header>
+    <h1 class="text-center">Crafted Gems</h1>
+    <h2 class="text-center">– an Angular store –</h2>
+  </header>
+
+  <div class="list-group">
+    <div class="list-group-item" ng-hide="store.products.soldOut" ng-repeat="product in store.products">
+      <h3>
+        {{product.name}}
+        <em class="pull-right">{{product.price | currency}}</em>
+      </h3>
+      <button ng-show="product.canPurchase">Add to cart</button>
+
+      <div class='gallery' ng-show="product.images.length" ng-controller="GalleryController as gallery">
+        <img ng-src="{{product.images(current)}}" />
+        <ul class="list-inline thumbs">
+          <li class="thumbnail" ng-repeat="image in product.images">
+            <img ng-src="{{image}}" />
+          </li>
+        </ul>
+      </div>
+
+      <section class="tab" ng-controller="TabController as tab">
+        <ul class="nav nav-pills">
+          <li ng-class="{ active: tab.isSet(1)}">
+            <a href ng-click="tab.setTab(1)">Description</a></li>
+          <li ng-class="{ active: tab.isSet(2)}">
+            <a href ng-click="tab.setTab(2)">Specs</a></li>
+          <li ng-class="{ active: tab.isSet(3)}">
+            <a href ng-click="tab.setTab(3)">Reviews</a></li>
+        </ul>
+
+        <div class="tab" ng-show="tab.isSet(1)">
+          <product-description>
+
+          </product-description>
+        </div>
+
+        <div class="tab" ng-show="tab.isSet(2)">
+          <h4 product-specs>Specs</h4>
+        </div>
+
+        <div class="tab" ng-show="tab.isSet(3)">
+          <ul>
+            <h4>Reviews</h4>
+            <li ng-repeat="review in product.reviews">
+              <blockquote>
+                <strong>{{review.stars}} Stars</strong>
+                {{review.body}}
+                <cite class="clearfix">- {{review.author + ' on '+ review.createdOn | date: "mediumDate"}}</cite>
+              </blockquote>
+            </li>
+          </ul>
+          <!--  Review Form -->
+
+          <form name="reviewForm" ng-controller="ReviewController as reviewCtrl" ng-submit="reviewForm.$valid && reviewCtrl.addReview(product)" novalidate>
+            <!--  Live Preview -->
+            <blockquote>
+              <strong>{{review.stars}} Stars</strong>
+              {{review.body}}
+              <cite class="clearfix">— {{review.author}}</cite>
+            </blockquote>
+
+            <!--  Review Form -->
+            <h4>Submit a Review</h4>
+            <fieldset class="form-group">
+              <select class="form-control" ng-options="stars for stars in [5,4,3,2,1]"  title="Stars" ng-model="reviewCtrl.review.stars" required>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select>
+            </fieldset>
+
+            <fieldset class="form-group">
+              <textarea class="form-control" placeholder="Write a short review of the product..." title="Review" ng-model="reviewCtrl.review.body"></textarea>
+            </fieldset>
+
+            <fieldset class="form-group">
+              <input type="email" class="form-control" placeholder="jimmyDean@example.org" title="Email" ng-model="reviewCtrl.review.author" required/>
+            </fieldset>
+
+            <fieldset class="form-group">
+              <input type="submit" class="btn btn-primary pull-right" value="Submit Review"/>
+            </fieldset>
+          </form>
+        </div>
+      </section>
+    </div>
+  </div>
+
+<!-- In production use:
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
+-->
+<!--<script src="bower_components/angular/angular.js"></script>
+<script src="bower_components/angular-route/angular-route.js"></script>-->
+<script src="app.js"></script>
+<!--
+<script src="components/version/version.js"></script>
+<script src="components/version/version-directive.js"></script>
+<script src="components/version/interpolate-filter.js"></script>
+-->
+
+</body>
+</html>
